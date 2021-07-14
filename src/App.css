@@ -13,6 +13,7 @@
   min-width: 350px;
   margin: 15px;
   background-color: rgb(255, 255, 255);
+  min-height: 400px;
 }
 
 .ticket {

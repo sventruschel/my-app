@@ -1,30 +1,41 @@
-import React from "react";
+import { ComponentProps } from "react";
 
-type Ticket = { name: string; description: string };
+import "./Ticket";
+import Ticket from "./Ticket";
 
 type Props = {
   name: string;
-  tickets?: Ticket[];
+  laneId: number;
+  tickets?: ComponentProps<typeof Ticket>[] ;
 };
 
 const onDragOverHandler = (event: { preventDefault: () => void }) => {
   event.preventDefault();
-  console.log("ayaya");
+  console.log("drag over");
 };
 
-const Lane = ({ name, tickets }: Props): JSX.Element => (
-  <div className="lane">
+const dropHandler = (event: any) => {
+  event.preventDefault();
+  console.log("drophandler");
+  console.log(event.target)
+  console.log(event)
+  // var data = event.dataTransfer.getData("ticket");
+  // event.target.appendChild(document.getElementById(data));
+};
+
+const Lane = ({ name, tickets, laneId }: Props): JSX.Element => (
+  <div className="lane" onDragOver={onDragOverHandler} onDrop={dropHandler} data-lane-id={laneId}>
     <h4 className="title">{name}</h4>
-    <div onDragOver={onDragOverHandler}>
-      {tickets &&
+    {/* {tickets &&
         tickets.map((t) => (
-          <div className="ticket" draggable="true">
-            <h4>{t.name}</h4>
-            <hr />
-            <p>{t.description}</p>
-          </div>
-        ))}
-    </div>
+
+          
+        ))} */}
+    {tickets &&
+      tickets.map((t) => {
+        console.log({'t': t.props})
+        return <Ticket name={t.props.name} description={t.props.description} />;
+      })}
   </div>
 );
 
