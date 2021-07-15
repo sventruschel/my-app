@@ -2,21 +2,19 @@ import React from "react";
 
 type TicketProps = { name: string; description: string; props?: any };
 
-const dragHandler = (event: any) => {
-    console.log('dragHandler')
+const Ticket = ({ name, description }: TicketProps): JSX.Element => {
+  const dragHandler = (event: any) => {
+    console.log("dragHandler");
     event.dataTransfer.setData("ticket", event.target.id);
-  }
-  
+  };
 
-
-
-const Ticket = ({ name, description }: TicketProps): JSX.Element => (
+  return (
     <div className="ticket" draggable="true" onDragStart={dragHandler}>
-        <h4>{name}</h4>
-        <hr />
-        <p>{description}</p>
+      <h4>{name}</h4>
+      <hr />
+      <p>{description}</p>
     </div>
   );
+};
 
-
-  export default Ticket;
+export default Ticket;

@@ -17,8 +17,7 @@ const Lane = ({ name, tickets, laneId, addTicket }: Props): JSX.Element => {
   const dropHandler = (event: any) => {
     event.preventDefault();
     console.log("drophandler");
-    console.log(event.target);
-    console.log(event);
+    console.log(event.target.dataset.lane);
     addTicket();
   };
 
@@ -27,7 +26,7 @@ const Lane = ({ name, tickets, laneId, addTicket }: Props): JSX.Element => {
       className="lane"
       onDragOver={onDragOverHandler}
       onDrop={dropHandler}
-      data-lane-id={laneId}
+      data-lane={laneId}
     >
       <h4 className="title">{name}</h4>
       {tickets &&
