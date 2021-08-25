@@ -3,11 +3,14 @@ import { TicketType } from "../types";
 
 interface cardFormProps {
   submitHandler: (ticket: TicketType, event: any) => void;
+  nameValue?: string,
+  descriptionValue?: string
+  idValue?: number
 }
 
-export function CardForm({ submitHandler }: cardFormProps) {
-  const [name, setName] = React.useState("");
-  const [description, setDescription] = React.useState("");
+export function CardForm({ submitHandler, nameValue, descriptionValue, idValue}: cardFormProps) {
+  const [name, setName] = React.useState(nameValue ? nameValue : "");
+  const [description, setDescription] = React.useState(descriptionValue ? descriptionValue : '')
 
   return (
     <form
@@ -17,10 +20,13 @@ export function CardForm({ submitHandler }: cardFormProps) {
             name: name,
             description: description,
             laneId: 1,
+            ticketId: idValue
           },
           event
         );
-      }}
+      }
+      
+    }
     >
       <label>
         <strong>Name:</strong>
