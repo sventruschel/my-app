@@ -5,7 +5,7 @@ type Props = {
   name: string;
   laneId: number;
   tickets?: TicketType[];
-  addTicket: () => void;
+  addTicket: (targetTicketId: number, laneId: number) => void;
 };
 
 const Lane = ({ name, tickets, laneId, addTicket }: Props): JSX.Element => {
@@ -17,8 +17,10 @@ const Lane = ({ name, tickets, laneId, addTicket }: Props): JSX.Element => {
   const dropHandler = (event: any) => {
     event.preventDefault();
     console.log("drophandler");
-    console.log(event.target.dataset.lane);
-    addTicket();
+    var data = event.dataTransfer.getData("ticket");
+    console.log("laneId ", event.target.dataset.lane);
+    console.log("ticketId ", data);
+    addTicket(data, event.target.dataset.lane);
   };
 
   return (
@@ -31,7 +33,14 @@ const Lane = ({ name, tickets, laneId, addTicket }: Props): JSX.Element => {
       <h4 className="title">{name}</h4>
       {tickets &&
         tickets.map((t) => {
-          return <Ticket name={t.name} description={t.description} />;
+          return (
+            <Ticket
+              key={t.ticketId}
+              name={t.name}
+              description={t.description}
+              ticketId={t.ticketId}
+            />
+          );
         })}
     </div>
   );

@@ -1,5 +1,6 @@
-export type TicketType = {
+export interface TicketType {
   name: string;
   description: string;
-  laneId: number;
-};
+  ticketId?: number;
+  laneId?: number;
+}
