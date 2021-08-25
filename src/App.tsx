@@ -36,6 +36,7 @@ const Lane = ({ name, tickets, laneId, addTicket, openUpdate, deleteTicket }: La
               name={t.name}
               description={t.description}
               ticketId={t.ticketId}
+              laneId={t.laneId}
               openUpdate={openUpdate}
               deleteTicket={deleteTicket}
             />

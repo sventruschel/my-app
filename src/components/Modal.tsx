@@ -1,8 +1,8 @@
 import "./Modal.css";
 
 type modalProps = {
-  title?: string;
-  children?: React.ReactNode;
+  title: string;
+  children: React.ReactNode;
   show: boolean;
   onClose: () => void;
 };
