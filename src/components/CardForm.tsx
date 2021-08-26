@@ -2,31 +2,34 @@ import React, { FormEventHandler } from "react";
 import { TicketType } from "../types";
 
 interface cardFormProps {
-  submitHandler: (ticket: TicketType, event: any) => void;
-  nameValue?: string,
-  descriptionValue?: string
-  idValue?: number
+  submitHandler: (ticket: TicketType) => void;
+  nameValue?: string;
+  descriptionValue?: string;
+  idValue?: number;
 }
 
-export function CardForm({ submitHandler, nameValue, descriptionValue, idValue}: cardFormProps) {
+export function CardForm({
+  submitHandler,
+  nameValue,
+  descriptionValue,
+  idValue,
+}: cardFormProps) {
   const [name, setName] = React.useState(nameValue ? nameValue : "");
-  const [description, setDescription] = React.useState(descriptionValue ? descriptionValue : '')
+  const [description, setDescription] = React.useState(
+    descriptionValue ? descriptionValue : ""
+  );
 
   return (
     <form
       onSubmit={(event) => {
-        submitHandler(
-          {
-            name: name,
-            description: description,
-            laneId: 1,
-            ticketId: idValue
-          },
-          event
-        );
-      }
-      
-    }
+        event.preventDefault();
+        submitHandler({
+          name: name,
+          description: description,
+          laneId: 1,
+          ticketId: idValue,
+        });
+      }}
     >
       <label>
         <strong>Name:</strong>

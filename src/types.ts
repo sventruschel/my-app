@@ -3,9 +3,10 @@ export interface TicketType {
   description: string;
   laneId: number;
   ticketId?: number;
-  openUpdate?: (name: string, description: string, ticketId?: number) => void;
-  deleteTicket?: (ticketId?: number) => void;
 }
+//https://www.typescriptlang.org/docs/handbook/utility-types.html#omittype-keys
+//Jest for testing
+//https://github.com/testing-library/jest-dom#with-typescript
 
 export interface LaneType {
   name: string;
@@ -13,5 +14,5 @@ export interface LaneType {
   tickets: TicketType[];
   addTicket: (targetTicketId: number, laneId: number) => void;
   openUpdate: (name: string, description: string) => void;
-  deleteTicket: (ticketId?: number) => void;
+  deleteTicket: (ticketId: number) => void;
 }

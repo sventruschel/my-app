@@ -5,7 +5,23 @@ import { LaneType } from "./types";
 import Modal from "./components/Modal";
 import CardForm from "./components/CardForm";
 
-const Lane = ({ name, tickets, laneId, addTicket, openUpdate, deleteTicket }: LaneType): JSX.Element => {
+interface LaneProps {
+  name: string;
+  laneId: number;
+  tickets: TicketType[];
+  addTicket: (targetTicketId: number, laneId: number) => void;
+  openUpdate: (name: string, description: string) => void;
+  deleteTicket: (ticketId?: number) => void;
+}
+
+const Lane = ({
+  name,
+  tickets,
+  laneId,
+  addTicket,
+  openUpdate,
+  deleteTicket,
+}: LaneProps): JSX.Element => {
   const onDragOverHandler = (event: { preventDefault: () => void }) => {
     event.preventDefault();
     console.log("drag over");
@@ -33,10 +49,7 @@ const Lane = ({ name, tickets, laneId, addTicket, openUpdate, deleteTicket }: La
           return (
             <Ticket
               key={t.ticketId}
-              name={t.name}
-              description={t.description}
-              ticketId={t.ticketId}
-              laneId={t.laneId}
+              ticket={t}
               openUpdate={openUpdate}
               deleteTicket={deleteTicket}
             />
@@ -46,7 +59,18 @@ const Lane = ({ name, tickets, laneId, addTicket, openUpdate, deleteTicket }: La
   );
 };
 
-const Ticket = ({ name, description, ticketId, openUpdate, deleteTicket }: TicketType): JSX.Element => {
+interface TicketProps {
+  ticket: TicketType;
+  openUpdate?: (name: string, description: string, ticketId?: number) => void;
+  deleteTicket: (ticketId?: number) => void;
+}
+
+const Ticket = ({
+  ticket,
+  openUpdate,
+  deleteTicket,
+}: TicketProps): JSX.Element => {
+  const { name, description, ticketId } = ticket;
   const dragHandler = (event: any) => {
     console.log("dragHandler");
     event.dataTransfer.setData("ticket", ticketId);
@@ -59,15 +83,33 @@ const Ticket = ({ name, description, ticketId, openUpdate, deleteTicket }: Ticke
       draggable="true"
       onDragStart={dragHandler}
     >
-      <button onClick={openUpdate ? () => openUpdate(name, description, ticketId) : undefined}> <img width='16' height='16' src='https://image.flaticon.com/icons/png/512/481/481874.png' alt=''/></button>
-      <button onClick={deleteTicket ? () => deleteTicket(ticketId) : undefined}><img width='16' height='16' src='https://image.flaticon.com/icons/png/512/1214/1214428.png' alt=''/></button>
+      <button
+        onClick={
+          openUpdate ? () => openUpdate(name, description, ticketId) : undefined
+        }
+      >
+        {" "}
+        <img
+          width="16"
+          height="16"
+          src="https://image.flaticon.com/icons/png/512/481/481874.png"
+          alt=""
+        />
+      </button>
+      <button onClick={() => deleteTicket(ticketId)}>
+        <img
+          width="16"
+          height="16"
+          src="https://image.flaticon.com/icons/png/512/1214/1214428.png"
+          alt=""
+        />
+      </button>
       <h4>{name}</h4>
       <hr />
       <p>{description}</p>
     </div>
   );
 };
-
 
 function App() {
   const [tickets, setTickets] = React.useState([
@@ -94,13 +136,11 @@ function App() {
 
   const [showCreate, setShowCreate] = React.useState(false);
   const [showUpdate, setShowUpdate] = React.useState(false);
-  const [name, setName] = React.useState('');
-  const [description, setDescription] = React.useState('');
+  const [name, setName] = React.useState("");
+  const [description, setDescription] = React.useState("");
   const [ticketId, setTicketId] = React.useState(0);
 
-
-  const newTicket = (ticket: TicketType, event: any): void => {
-    event.preventDefault();
+  const newTicket = (ticket: TicketType): void => {
     const new_ticket_id =
       Math.max.apply(
         Math,
@@ -120,9 +160,9 @@ function App() {
         ticketId: new_ticket_id,
       },
     ]);
-    setShowCreate(false)
+    setShowCreate(false);
   };
-
+  //change to move ticket
   const addTicket = (targetTicketId: number, laneId: number) => {
     if (isNaN(laneId)) return;
     let new_tickets = tickets;
@@ -132,30 +172,32 @@ function App() {
   };
 
   const deleteTicket = (ticketId?: number) => {
-    debugger
-    // const new_tickets = ticketId ? tickets.splice(1, index) : tickets
-    let new_tickets = tickets.filter((t) => t.ticketId !== ticketId);
+    if (!ticketId) return;
+    const new_tickets = tickets.filter((t) => t.ticketId !== ticketId);
     setTickets([...new_tickets]);
-  }
+  };
 
-  const openUpdate = (name?: string, description?: string, ticketId?: number) => {
+  const openUpdate = (
+    name?: string,
+    description?: string,
+    ticketId?: number
+  ) => {
     setShowUpdate(true);
-    name && setName(name)
-    description && setDescription(description)
-    ticketId && setTicketId(ticketId)
-  }
+    name && setName(name);
+    description && setDescription(description);
+    ticketId && setTicketId(ticketId);
+  };
 
-  const updateTicket = (targetTicket: TicketType, event: any): void => {
-    event.preventDefault();
-
-
+  const updateTicket = (targetTicket: TicketType): void => {
     let new_tickets = tickets;
-    let index = new_tickets.findIndex((t) => t.ticketId === targetTicket.ticketId);
+    let index = new_tickets.findIndex(
+      (t) => t.ticketId === targetTicket.ticketId
+    );
     new_tickets[index].name = targetTicket.name;
     new_tickets[index].description = targetTicket.description;
 
     setTickets([...new_tickets]);
-    setShowUpdate(false)
+    setShowUpdate(false);
   };
 
   const returnTicketsAlt = (tickets: TicketType[], laneId: number) => {
@@ -167,11 +209,24 @@ function App() {
       <button className="addButton" onClick={() => setShowCreate(true)}>
         Add Card
       </button>
-      <Modal show={showCreate} onClose={() => setShowCreate(false)} title="Add Card" >
-        <CardForm submitHandler={newTicket}  />
+      <Modal
+        show={showCreate}
+        onClose={() => setShowCreate(false)}
+        title="Add Card"
+      >
+        <CardForm submitHandler={newTicket} />
       </Modal>
-      <Modal show={showUpdate} onClose={() => setShowUpdate(false)} title="Update Card">
-        <CardForm submitHandler={updateTicket} nameValue={name} descriptionValue={description} idValue={ticketId} />
+      <Modal
+        show={showUpdate}
+        onClose={() => setShowUpdate(false)}
+        title="Update Card"
+      >
+        <CardForm
+          submitHandler={updateTicket}
+          nameValue={name}
+          descriptionValue={description}
+          idValue={ticketId}
+        />
       </Modal>
 
       <div className="App">
